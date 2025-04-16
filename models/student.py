@@ -12,8 +12,8 @@ class Student(models.Model):
         ('regular', 'Regular'),
         ('distance', 'Distance')
     ], string='Mode of Study')
-    course_id = fields.Many2one('product.product', string='Course Applied For', 
-        domain=[('detailed_type', '=', 'service')], required=True)
+    course_id = fields.Many2one('product.product', string='Course Applied For',
+        domain=[('type', '=', 'service')], required=True)
     branch = fields.Char(string='Branch')
     second_language = fields.Char(string='Second Language')
     batch_no = fields.Char(string='Batch No')

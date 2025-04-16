@@ -19,5 +19,5 @@
     'installable': True,
     'application': True,
     'license': 'LGPL-3',
-    'web_icon': "student_management,static/description/icon.png"
+    'web_icon': "student_management,static/description/icon.png",
 }
