@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_student_form" model="ir.ui.view">
+        <field name="name">student.student.form</field>
+        <field name="model">student.student</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="photo" widget="image" class="oe_avatar"/>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="enrollment_date"/>
+                            <field name="academic_year"/>
+                            <field name="mode_of_study"/>
+                            <field name="course_id"/>
+                            <field name="branch"/>
+                            <field name="second_language"/>
+                            <field name="batch_no"/>
+                            <field name="university"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Address Information">
+                            <group>
+                                <group string="Communication Address">
+                                    <field name="comm_flat_no"/>
+                                    <field name="comm_street"/>
+                                    <field name="comm_post_office"/>
+                                    <field name="comm_district"/>
+                                    <field name="comm_state"/>
+                                    <field name="comm_pincode"/>
+                                </group>
+                                <group string="Permanent Address">
+                                    <field name="perm_flat_no"/>
+                                    <field name="perm_street"/>
+                                    <field name="perm_locality"/>
+                                    <field name="perm_district"/>
+                                    <field name="perm_state"/>
+                                    <field name="perm_pincode"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Contact Information">
+                            <group>
+                                <field name="phone"/>
+                                <field name="whatsapp"/>
+                                <field name="email"/>
+                                <field name="student_email"/>
+                            </group>
+                        </page>
+                        <page string="Academic Records">
+                            <field name="academic_records_ids">
+                                <tree editable="bottom">
+                                    <field name="exam_passed"/>
+                                    <field name="institution"/>
+                                    <field name="year"/>
+                                    <field name="percentage"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Parent Details">
+                            <group>
+                                <group string="Father's Details">
+                                    <field name="father_name"/>
+                                    <field name="father_age"/>
+                                    <field name="father_occupation"/>
+                                    <field name="father_contact"/>
+                                </group>
+                                <group string="Mother's Details">
+                                    <field name="mother_name"/>
+                                    <field name="mother_age"/>
+                                    <field name="mother_occupation"/>
+                                    <field name="mother_contact"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_student_tree" model="ir.ui.view">
+        <field name="name">student.student.tree</field>
+        <field name="model">student.student</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="admission_no"/>
+                <field name="course_id"/>
+                <field name="batch_no"/>
+                <field name="phone"/>
+                <field name="email"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_student" model="ir.actions.act_window">
+        <field name="name">Students</field>
+        <field name="res_model">student.student</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_student_root"
+              name="Student Management"
+              sequence="10"/>
+
+    <menuitem id="menu_student"
+              name="Students"
+              parent="menu_student_root"
+              action="action_student"
+              sequence="10"/>
+</odoo>
