@@ -10,7 +10,7 @@
         - Track academic records
         - Store contact details
     """,
-    'depends': ['base', 'crm'],
+    'depends': ['crm'],
     'data': [
         'security/ir.model.access.csv',
         'views/student_views.xml',
@@ -19,10 +19,5 @@
     'installable': True,
     'application': True,
     'license': 'LGPL-3',
-    'web_icon': 'student_management/static/description/icon.png',
-    'assets': {
-        'web.assets_backend': [
-            '/student_management/static/src/css/student_styles.css',
-        ],
-    },
+    'web_icon': 'student_management,static/description/icon.png'
 }
