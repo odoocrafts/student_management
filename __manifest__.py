@@ -14,6 +14,7 @@
             'student_management/static/description/icon.png',
         ],
     },
+    'web_icon': 'student_management/static/description/icon.png',
     'installable': True,
     'application': True,
 }
