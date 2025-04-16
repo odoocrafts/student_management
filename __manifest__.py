@@ -1,5 +1,5 @@
 {
-    'name': 'Student Management',
+    'name': 'Students',
     'version': '17.0.1.0.0',
     'category': 'Education',
     'summary': 'Manage students from CRM leads',
@@ -19,5 +19,5 @@
     'installable': True,
     'application': True,
     'license': 'LGPL-3',
-    'web_icon': 'student_management,static/description/icon.png'
+    'web_icon': "student_management,static/description/icon.png"
 }
