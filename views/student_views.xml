@@ -6,6 +6,7 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
+                    <field name="photo" widget="image" class="oe_avatar"/>
                     <group>
                         <group>
                             <field name="name"/>
@@ -17,6 +18,8 @@
                             <field name="second_language"/>
                             <field name="batch_no"/>
                             <field name="university"/>
+                            <field name="payment_scheme"/>
+                            <field name="installment_count" invisible="payment_scheme != 'installment'"/>
                         </group>
                     </group>
                     <notebook>
@@ -80,8 +83,6 @@
                                     <field name="total_fee"/>
                                     <field name="paid_amount"/>
                                     <field name="pending_amount"/>
-                                    <field name="payment_scheme"/>
-                                    <field name="installment_count" attrs="{'invisible': [('payment_scheme', '!=', 'installment')]}"/>
                                     <field name="next_payment_date"/>
                                 </group>
                             </group>
