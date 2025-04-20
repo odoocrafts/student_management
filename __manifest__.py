@@ -10,7 +10,7 @@
         - Track academic records
         - Store contact details
     """,
-    'depends': ['crm'],
+    'depends': ['crm', 'product'],
     'data': [
         'security/ir.model.access.csv',
         'views/student_views.xml',
