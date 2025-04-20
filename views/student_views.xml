@@ -112,8 +112,11 @@
                 <field name="admission_no"/>
                 <field name="course_id"/>
                 <field name="batch_no"/>
-                <field name="phone"/>
-                <field name="email"/>
+                <field name="total_fee" sum="Total"/>
+                <field name="paid_amount" sum="Paid"/>
+                <field name="pending_amount" sum="Pending"/>
+                <field name="payment_scheme"/>
+                <field name="next_payment_date"/>
             </tree>
         </field>
     </record>
