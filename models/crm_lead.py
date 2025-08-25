@@ -1,19 +1,84 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
     def action_create_student(self):
         self.ensure_one()
+        return {'type': 'ir.actions.act_window',
+                'name': _('Student Profile'),
+                'res_model': 'add.student.wizard',
+                'target': 'new',
+                'view_mode': 'form',
+                'view_type': 'form',
+                'context': {'default_lead_id': self.id}, }
+
+    def action_get_student_record(self):
+        self.ensure_one()
         return {
-            'name': 'Create Student',
             'type': 'ir.actions.act_window',
+            'name': 'Student',
+            'view_mode': 'tree,form',
             'res_model': 'student.student',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_name': self.contact_name or self.partner_id.name,
-                'default_phone': self.phone or self.partner_id.phone,
-                'default_email': self.email_from or self.partner_id.email,
-            }
+            'domain': [('lead_id', '=', self.id)],
+            'context': "{'create': False}"
         }
+
+    student_count = fields.Integer(string="Student",
+                                   compute='compute_student_count',
+                                   default=0)
+    student_profile_created = fields.Boolean(string="Student Profile Created")
+
+    @api.onchange('stage_id')
+    def _onchange_stage_id(self):
+        if self.stage_id:
+            print('stage')
+            if self.stage_id.is_won == 1:
+                self.is_won_stage = 1
+
+    def compute_student_count(self):
+        for record in self:
+            record.student_count = self.env['student.student'].search_count(
+                [('lead_id', '=', self.id)])
+
+class StudentCreationWizard(models.TransientModel):
+   """This model is used for sending WhatsApp messages through Odoo."""
+   _name = 'add.student.wizard'
+   _description = "Student Creation Wizard"
+
+   lead_id = fields.Many2one('crm.lead', string="Lead")
+   first_name = fields.Char(string="First Name", required=1)
+   last_name = fields.Char(string="Last Name", required=1)
+   name = fields.Char(string="Name")
+   mobile = fields.Char(required=True)
+   email = fields.Char(required=True)
+   course_id = fields.Many2one('product.product', required=1)
+   payment_plan = fields.Selection([
+        ('full', 'Full Payment'),
+        ('installment', 'Installment')
+    ], string='Payment Scheme', required=True, default='full')
+
+   @api.onchange('lead_id')
+   def _onchange_lead_id(self):
+       if self.lead_id:
+           self.mobile = self.lead_id.mobile
+           self.email = self.lead_id.email_from
+
+
+   @api.onchange('first_name', 'last_name')
+   def _onchange_name(self):
+       self.name = str(self.first_name) + " " + str(self.last_name)
+
+   def action_create_student(self):
+       for i in self:
+           self.env['student.student'].sudo().create({
+               'first_name': i.first_name,
+               'last_name': i.last_name,
+               'name': i.name,
+               'payment_scheme': i.payment_plan,
+               'mobile': i.mobile,
+               'email': i.email,
+               'course_id': i.course_id.id,
+               'lead_id': i.lead_id.id,
+           })
+           i.lead_id.student_profile_created = True

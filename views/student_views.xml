@@ -5,26 +5,89 @@
         <field name="model">student.student</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button name="act_confirm" type="object" string="Confirm" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="act_send_welcome_email" type="object" string="Send Mail"/>
+                    <button name="action_generate_form_link" string="Student Details Form" type="object"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
                 <sheet>
-                    <field name="photo" widget="image" class="oe_avatar"/>
-                    <group>
-                        <group>
-                            <field name="name"/>
-                            <field name="enrollment_date"/>
-                            <field name="academic_year"/>
-                            <field name="mode_of_study"/>
-                            <field name="course_id" options="{'no_create': True, 'no_create_edit': True}"/>
-                            <field name="branch"/>
-                            <field name="second_language"/>
-                            <field name="batch_no"/>
-                            <field name="university"/>
-                            <field name="payment_scheme"/>
-                            <field name="installment_count" invisible="payment_scheme != 'installment'"/>
-                        </group>
-                    </group>
+                    <div style="width:100%;" class="row align-items-center">
+                        <div class="col-4 col-lg-2" style="text-align-last: center;">
+                            <field name="photo" widget="image" class="oe_left oe_avatar"
+                                   style="margin-right: 30px !important;"/>
+                        </div>
+                        <div class="mb16 col-8 col-lg-10 px-0">
+                            <div class="row">
+                                <h2 class="col-12 col-lg-10">
+
+                                    <table>
+                                        <tr>
+                                            <!--                                                <td style="padding-right:10px;">-->
+                                            <td style="padding-right:10px;">
+                                                <field name="first_name" placeholder="First Name"/>
+                                            </td>
+                                            <td style="padding-right:10px;">
+                                                <field name="last_name" placeholder="Last Name"/>
+                                            </td>
+                                            <!--                                                    <field name="first_name" placeholder="First Name"-->
+                                            <!--                                                           string="First Name" required="1"/>-->
+                                            <!--                                                    <field name="last_name" placeholder="Last Name" string="Last Name"-->
+                                            <!--                                                           required="1"/>-->
+                                            <field name="name" required="1" placeholder="Student Name" invisible="1"
+                                            />
+                                            <!--                                                </td>-->
+                                        </tr>
+
+                                    </table>
+
+                                </h2>
+                            </div>
+                            <group>
+                                <group>
+                                    <field name="form_token" invisible="1"/>
+                                    <field name="admission_no" string="Admission No." placeholder="Admission Number"/>
+                                    <field name="mobile" placeholder="Mobile Number"/>
+                                    <field name="whatsapp"/>
+                                    <field name="email" required="1" placeholder="Email Address"/>
+
+                                </group>
+                            </group>
+                        </div>
+                    </div>
+
                     <notebook>
+                        <page string="Personal Information" name="personal_information">
+                            <group>
+                                <group>
+
+                                    <field name="branch"/>
+                                    <field name="second_language"/>
+                                    <field name="batch_no"/>
+                                    <field name="university"/>
+                                    <!--                                    <field name="payment_scheme"/>-->
+                                    <field name="installment_count" invisible="payment_scheme != 'installment'"/>
+                                </group>
+                                <group string="Father's Details">
+                                    <field name="father_name"/>
+                                    <!--                                    <field name="father_age"/>-->
+                                    <field name="father_occupation"/>
+                                    <field name="father_occupation_location"/>
+                                    <field name="father_contact"/>
+                                </group>
+                                <group string="Mother's Details">
+                                    <field name="mother_name"/>
+                                    <!--                                    <field name="mother_age"/>-->
+                                    <field name="mother_occupation"/>
+                                    <field name="mother_occupation_location"/>
+                                    <field name="mother_contact"/>
+                                </group>
+                            </group>
+                        </page>
                         <page string="Address Information">
                             <group>
+
                                 <group string="Communication Address">
                                     <field name="comm_flat_no"/>
                                     <field name="comm_street"/>
@@ -32,26 +95,29 @@
                                     <field name="comm_district"/>
                                     <field name="comm_state"/>
                                     <field name="comm_pincode"/>
+
                                 </group>
                                 <group string="Permanent Address">
+                                    <field name="same_as_community"/>
                                     <field name="perm_flat_no"/>
                                     <field name="perm_street"/>
-                                    <field name="perm_locality"/>
+                                    <field name="perm_post_office"/>
                                     <field name="perm_district"/>
                                     <field name="perm_state"/>
                                     <field name="perm_pincode"/>
                                 </group>
                             </group>
                         </page>
-                        <page string="Contact Information">
-                            <group>
-                                <field name="phone"/>
-                                <field name="whatsapp"/>
-                                <field name="email"/>
-                                <field name="student_email"/>
-                            </group>
-                        </page>
                         <page string="Academic Records">
+                            <group>
+                                <group>
+                                    <field name="enrollment_date"/>
+                                    <field name="academic_year"/>
+                                    <field name="mode_of_study"/>
+                                    <field name="course_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                                </group>
+                            </group>
+
                             <field name="academic_records_ids">
                                 <tree editable="bottom">
                                     <field name="exam_passed"/>
@@ -61,25 +127,15 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="Parent Details">
-                            <group>
-                                <group string="Father's Details">
-                                    <field name="father_name"/>
-                                    <field name="father_age"/>
-                                    <field name="father_occupation"/>
-                                    <field name="father_contact"/>
-                                </group>
-                                <group string="Mother's Details">
-                                    <field name="mother_name"/>
-                                    <field name="mother_age"/>
-                                    <field name="mother_occupation"/>
-                                    <field name="mother_contact"/>
-                                </group>
-                            </group>
-                        </page>
+
                         <page string="Fee Management">
                             <group>
                                 <group>
+                                    <field name="payment_scheme"/>
+                                </group>
+                                <group>
+                                    <field name="course_fee" string="Course Fee"/>
+                                    <field name="discount_fee"/>
                                     <field name="total_fee"/>
                                     <field name="paid_amount"/>
                                     <field name="pending_amount"/>
@@ -99,8 +155,23 @@
                         </page>
                     </notebook>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                </div>
             </form>
         </field>
+    </record>
+
+    <record id="ir_sequence_student_student" model="ir.sequence">
+        <field name="name">Admission Numbers</field>
+        <field name="code">student.student</field>
+        <field name="prefix">CB</field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+        <field name="company_id" eval="False"/>
     </record>
 
     <record id="view_student_tree" model="ir.ui.view">
@@ -108,8 +179,9 @@
         <field name="model">student.student</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="name"/>
                 <field name="admission_no"/>
+                <field name="name"/>
+                <field name="mobile" placeholder="Mobile Number"/>
                 <field name="course_id"/>
                 <field name="batch_no"/>
                 <field name="total_fee" sum="Total"/>
@@ -117,6 +189,7 @@
                 <field name="pending_amount" sum="Pending"/>
                 <field name="payment_scheme"/>
                 <field name="next_payment_date"/>
+                <field name="state" widget="badge" decoration-success="state == 'confirmed'" decoration-info="state == 'draft'"/>
             </tree>
         </field>
     </record>
@@ -129,6 +202,7 @@
 
     <menuitem id="menu_student_root"
               name="Student Management"
+              web_icon="student_management,static/description/icon.png"
               sequence="10"/>
 
     <menuitem id="menu_student"

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="student_form_template" name="Student Public Form">
+        <t t-call="website.layout">
+            <div class="container mt-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-6 col-lg-5">
+                        <div class="card shadow-lg p-4 rounded">
+                            <h2 class="text-center mb-4">Student Details</h2>
+
+                            <form action="/student_form/submit" method="post" class="needs-validation">
+
+                                <!-- Pass token -->
+                                <input type="hidden" name="token" t-att-value="student.form_token"/>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Phone No.</label>
+                                    <input type="tel" class="form-control" required="1" name="mobile"
+                                           t-att-value="student.mobile"
+                                    />
+                                    <div class="invalid-feedback">Please enter your phone number.</div>
+                                </div>
+                                <!-- Email -->
+                                <div class="mb-3">
+                                    <label class="form-label">Email Id</label>
+                                    <input type="email" class="form-control" required="1" name="email"
+                                           t-att-value="student.email"
+                                    />
+                                    <div class="invalid-feedback">Please enter a valid email.</div>
+                                </div>
+
+                                <!-- Date of Enrollment -->
+                                <div class="mb-3">
+                                    <label class="form-label">Date of Enrollment</label>
+                                    <input type="date" class="form-control" name="enrollment_date"
+                                           t-att-value="student.enrollment_date"/>
+                                </div>
+
+                                <!-- Academic Year -->
+                                <div class="mb-3">
+                                    <label class="form-label">Academic Year</label>
+                                    <input type="text" class="form-control" name="academic_year"
+                                           t-att-value="student.academic_year"/>
+                                </div>
+
+                                <!-- Mode of Study -->
+                                <div class="mb-3">
+                                    <label class="form-label">Mode of Study</label>
+                                    <select class="form-select" name="mode_of_study">
+                                        <option value="">Select</option>
+                                        <option value="regular" t-att-selected="student.mode_of_study == 'regular'">
+                                            Regular
+                                        </option>
+                                        <option value="distance" t-att-selected="student.mode_of_study == 'distance'">
+                                            Distance
+                                        </option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select mode of study.</div>
+                                </div>
+
+                                <!-- Course Applied For -->
+                                <!--                                <div class="mb-3">-->
+                                <!--                                    <label class="form-label">Course Applied For</label>-->
+                                <!--                                    <select class="form-select" name="course_id">-->
+                                <!--                                        <option value="">Select Course</option>-->
+                                <!--                                        <t t-foreach="courses" t-as="course">-->
+                                <!--                                            <option t-att-value="course.id"-->
+                                <!--                                                    t-att-selected="student.course_id.id == course.id">-->
+                                <!--                                                <t t-esc="course.name"/>-->
+                                <!--                                            </option>-->
+                                <!--                                        </t>-->
+                                <!--                                    </select>-->
+                                <!--                                    <div class="invalid-feedback">Please select a course.</div>-->
+                                <!--                                </div>-->
+
+                                <!-- Branch -->
+                                <div class="mb-3">
+                                    <label class="form-label">Branch</label>
+                                    <input type="text" class="form-control" required="1" name="branch"
+                                           t-att-value="student.branch"/>
+                                </div>
+
+                                <!-- Second Language -->
+                                <div class="mb-3">
+                                    <label class="form-label">Second Language</label>
+                                    <input type="text" class="form-control" name="second_language"
+                                           t-att-value="student.second_language" required="1"/>
+                                </div>
+
+                                <!-- Batch No -->
+                                <div class="mb-3">
+                                    <label class="form-label">Batch No</label>
+                                    <input type="text" class="form-control" name="batch_no"
+                                           t-att-value="student.batch_no" required="1"/>
+                                </div>
+
+                                <!-- University -->
+                                <div class="mb-3">
+                                    <label class="form-label">University</label>
+                                    <input type="text" class="form-control" name="university"
+                                           t-att-value="student.university" required="1"/>
+                                </div>
+
+                                <h4 class="mt-4">Communication Address</h4>
+                                <div class="mb-3">
+                                    <label class="form-label">Flat/House No.</label>
+                                    <input type="text" class="form-control" name="comm_flat_no"
+                                           t-att-value="student.comm_flat_no" required="1"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Street Name</label>
+                                    <input type="text" class="form-control" name="comm_street"
+                                           t-att-value="student.comm_street" required="1"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Post Office</label>
+                                    <input type="text" class="form-control" name="comm_post_office"
+                                           t-att-value="student.comm_post_office" required="1"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">District</label>
+                                    <input type="text" class="form-control" name="comm_district"
+                                           t-att-value="student.comm_district" required="1"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">State</label>
+                                    <input type="text" class="form-control" name="comm_state"
+                                           t-att-value="student.comm_state" required="1"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Pin Code</label>
+                                    <input type="text" class="form-control" name="comm_pincode"
+                                           t-att-value="student.comm_pincode" required="1"/>
+                                </div>
+                                <!-- Father Details -->
+                                <h4 class="mt-4">Father's Details</h4>
+                                <div class="form-group mb-3">
+                                    <label>Father's Name</label>
+                                    <input type="text" name="father_name" t-att-value="student.father_name"
+                                           class="form-control" required="1"/>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label>Father's Occupation</label>
+                                    <input type="text" name="father_occupation" t-att-value="student.father_occupation"
+                                           class="form-control" required="1"/>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label>Father Occupation Location</label>
+                                    <input type="text" name="father_occupation_location" required="1"
+                                           t-att-value="student.father_occupation_location" class="form-control"/>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label>Father's Contact No.</label>
+                                    <input type="text" name="father_contact" t-att-value="student.father_contact"
+                                           class="form-control" required="1"/>
+                                </div>
+
+                                <!-- Mother Details -->
+                                <h4 class="mt-4">Mother's Details</h4>
+                                <div class="form-group mb-3">
+                                    <label>Mother's Name</label>
+                                    <input type="text" name="mother_name" t-att-value="student.mother_name"
+                                           class="form-control" required="1"/>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label>Mother's Occupation</label>
+                                    <input type="text" name="mother_occupation" t-att-value="student.mother_occupation"
+                                           class="form-control" required="1"/>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label>Mother Occupation Location</label>
+                                    <input type="text" name="mother_occupation_location" required="1"
+                                           t-att-value="student.mother_occupation_location" class="form-control"/>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label>Mother's Contact No.</label>
+                                    <input type="text" name="mother_contact" t-att-value="student.mother_contact"
+                                           class="form-control" required="1"/>
+                                </div>
+<!--                                <div class="mb-3">-->
+<!--                                    <label class="form-label">Upload Photo</label>-->
+<!--                                    <input type="file" class="form-control" name="photo" accept="image/*"/>-->
+<!--                                    <small class="text-muted">Allowed formats: JPG, PNG, GIF (Max size: 2MB)</small>-->
+<!--                                </div>-->
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Optional Bootstrap Validation Script -->
+        </t>
+    </template>
+
+    <template id="student_form_success" name="Student Form Success">
+        <t t-call="website.layout">
+            <div class="container" style="display:flex; justify-content:center; align-items:center; min-height:60vh;">
+                <div style="text-align:center; background:#f8f9fa; padding:40px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+                    <h2 style="color:#28a745; margin-bottom:15px;">🎉 Thank You!</h2>
+                    <p style="font-size:18px; color:#555;">
+                        Your form has been submitted successfully.
+                    </p>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

@@ -2,3 +2,8 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_student_student,student.student,model_student_student,base.group_user,1,1,1,1
 access_student_academic_record,student.academic.record,model_student_academic_record,base.group_user,1,1,1,1
 access_student_fee_payment,student.fee.payment,model_student_fee_payment,base.group_user,1,1,1,1
+
+access_student_add_wizard,access_student_add_wizard,model_add_student_wizard,base.group_user,1,1,1,1
+access_student_link_wizard,access_student_link_wizard,model_student_details_link,base.group_user,1,1,1,1
+
+access_student_welcome_mail,access_student_welcome_mail,model_student_welcome_mail,base.group_user,1,1,1,1

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Odoo View Definition for Whatsapp Message Form -->
+    <record id="welcome_mail_template_wizard" model="ir.ui.view">
+        <field name="name">welcome_mail.wizard.view.form</field>
+        <field name="model">student.welcome.mail</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <form string="Student Welcome Mail">
+                <style>
+                    .centered-group {
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 15px;
+                    }
+
+                    .highlight-field .o_input,
+                    .highlight-field .o_field_widget {
+                    background-color: #fff3cd; /* Light yellow background */
+                    border: 1px solid #ffca2c; /* Highlight border */
+                    border-radius: 6px;
+                    padding: 6px;
+                    }
+
+                </style>
+                <group>
+                    <group>
+                        <field name="student_id"/>
+                        <field name="student_id_code" required="mail_type == 'welcome_mail'"/>
+                        <field name="email"/>
+                        <field name="mail_type"/>
+                        <field name="course_id" required="mail_type == 'welcome_mail'"/>
+                    </group>
+                    <group>
+                        <field name="start_date" invisible="mail_type != 'welcome_mail'" required="mail_type == 'welcome_mail'"/>
+                        <field name="payment_date" invisible="mail_type != 'welcome_mail'" required="mail_type == 'welcome_mail'"/>
+                        <field name="amount" string="Admission Fee" invisible="mail_type != 'welcome_mail'" required="mail_type == 'welcome_mail'"/>
+                        <field name="campus_location" invisible="mail_type != 'welcome_mail'" required="mail_type == 'welcome_mail'"/>
+
+                        <field name="due_amount" invisible="mail_type != 'reminder_mail'"/>
+                        <field name="due_date" invisible="mail_type != 'reminder_mail'" required="mail_type == 'reminder_mail'"/>
+                        <field name="accounts_email" invisible="mail_type != 'reminder_mail'"/>
+                        <field name="phone_number" invisible="mail_type != 'reminder_mail'"/>
+
+
+                    </group>
+
+
+                </group>
+                <div class="centered-fields" align="center">
+                    <field name="message" string="Content" invisible="mail_type != 'welcome_mail'"
+                           class="highlight-field"/>
+                    <field name="remainder_mail" invisible="mail_type != 'reminder_mail'" class="highlight-field"/>
+                </div>
+
+                <footer>
+                    <button name="action_send_remainder_mail" string="Sent Reminder Mail" type="object"
+                            class="oe_highlight" invisible="mail_type != 'reminder_mail'"/>
+                    <button name="action_send_mail" string="Send Welcome Mail" type="object" class="oe_highlight"
+                            invisible="mail_type != 'welcome_mail'"/>
+                    <button name="cancel" string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

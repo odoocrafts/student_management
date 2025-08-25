@@ -5,13 +5,77 @@
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button"
+                        type="object"
+                        icon="fa-id-badge"
+                        name="action_get_student_record">
+                    <field string="Student" name="student_count" widget="statinfo"/>
+                </button>
+
+
+            </div>
             <xpath expr="//header" position="inside">
-                <button string="Create Student"
+                <button string="Student Onboard"
                         name="action_create_student"
                         type="object"
-                        invisible="not stage_id.is_won"
+                        invisible="probability &lt; 100 or student_profile_created == 1"
                         class="btn-primary"/>
+            </xpath>
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="student_profile_created" invisible="1"/>
             </xpath>
         </field>
     </record>
+
+    <record id="add_student_wizard_form_view" model="ir.ui.view">
+        <field name="name">wizard.add.student.view.form</field>
+        <field name="model">add.student.wizard</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <form string="Student Form">
+                <sheet>
+                    <div class="mb16 col-8 col-lg-10 px-0">
+                        <div class="row">
+                            <h2 class="col-12 col-lg-10">
+
+                                <table>
+                                    <tr>
+                                        <td style="padding-right:10px;">
+                                            <field name="first_name" placeholder="First Name"/>
+                                        </td>
+                                        <td style="padding-right:10px;">
+                                            <field name="last_name" placeholder="Last Name"/>
+                                        </td>
+                                    </tr>
+
+                                </table>
+
+                            </h2>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="name" invisible="1"/>
+                                <field name="lead_id" invisible="1"/>
+                                <field name="mobile" readonly="0" required="1"/>
+                                <field name="email"/>
+                            </group>
+                            <group>
+                                <field name="course_id"/>
+                                <field name="payment_plan"/>
+                            </group>
+
+                        </group>
+                    </div>
+                </sheet>
+
+
+                <footer>
+                    <button name="action_create_student" string="Confirm" type="object"/>
+                    <button name="cancel" string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
 </odoo>
