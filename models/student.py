@@ -78,6 +78,7 @@ class Student(models.Model):
     @api.depends('total_fee', 'paid_amount')
     def _compute_pending_amount(self):
         for student in self:
+            print('hi')
             student.pending_amount = student.total_fee - student.paid_amount
 
 class StudentAcademicRecord(models.Model):
