@@ -1,5 +1,6 @@
 from email.policy import default
 import uuid
+from datetime import date
 from odoo import models, fields, api, _
 
 
@@ -17,6 +18,19 @@ class Student(models.Model):
     email = fields.Char(string='Email Id', required=True)
     enrollment_date = fields.Date(string='Date of Enrollment', default=fields.Date.today())
     academic_year = fields.Char(string='Academic Year')
+    fee_type = fields.Selection([
+        ('course_fee', 'Course Fee'),
+        ('contracted_fee', 'Contracted Fee'),
+        ('discount', 'Discount'),
+        ('other', 'Other'),
+    ], string="Fee Type", required=True, default='course_fee')
+    discount_type = fields.Selection([
+        ('scholarship_exam', 'Scholarship Exam'),
+        ('waiver', 'Waiver'),
+        ('sibling', 'Sibling Students'),
+        ('single_parent', 'Single Parents'),
+        ('others', 'Others'),
+    ], string="Discount Type")
     mode_of_study = fields.Selection([
         ('regular', 'Regular'),
         ('distance', 'Distance')
@@ -27,6 +41,10 @@ class Student(models.Model):
     second_language = fields.Char(string='Second Language')
     batch_no = fields.Char(string='Batch No')
     university = fields.Char(string='University')
+    is_it_required_university = fields.Boolean(string='University Required',
+                                               related='course_id.is_it_required_university')
+    is_it_required_second_language = fields.Boolean(string='Second Language Required',
+                                                    related='course_id.is_it_required_second_language')
 
     # Communication Address
     comm_flat_no = fields.Char(string='Flat/House No.')
@@ -37,7 +55,7 @@ class Student(models.Model):
     comm_pincode = fields.Char(string='Pin Code')
 
     # Permanent Address
-    same_as_community = fields.Boolean(string='Same As Community')
+    same_as_community = fields.Boolean(string='Same As Communication Address')
     perm_flat_no = fields.Char(string='Permanent Flat/House No.')
     perm_street = fields.Char(string='Permanent Street Name')
     perm_post_office = fields.Char(string='Permanent Post Office')
@@ -64,8 +82,8 @@ class Student(models.Model):
     mother_contact = fields.Char(string="Mother's Contact No.")
 
     # Additional Details
-    admission_no = fields.Char(string='Admission No.', default=lambda self: self.env[
-        'ir.sequence'].next_by_code('student.student'))
+    admission_no = fields.Char(string="Admission No", readonly=True, copy=False)
+
     university_enrollment_no = fields.Char(string='University Enrollment No.')
     student_email = fields.Char(string='Student Email')
 
@@ -80,25 +98,57 @@ class Student(models.Model):
         ('full', 'Full Payment'),
         ('installment', 'Installment')
     ], string='Payment Scheme', required=True, default='full')
-    state = fields.Selection([('draft', 'Draft'), ('confirmed', 'Confirmed')], string='Status', default='draft', track_visibility=True)
+    state = fields.Selection([('draft', 'Draft'), ('confirmed', 'Confirmed')], string='Status', default='draft',
+                             track_visibility=True)
     installment_count = fields.Integer(string='Number of Installments', default=1)
     next_payment_date = fields.Date(string='Next Payment Date')
     lead_id = fields.Many2one('crm.lead', string='Lead')
 
     @api.model_create_multi
     def create(self, vals_list):
-        """Create a sequence for the student model and update lead"""
-        for vals in vals_list:
-            if vals.get('admission_no', _('New')) == _('New'):
-                vals['admission_no'] = self.env['ir.sequence'].next_by_code('student.student')
+        current_year = str(date.today().year)[-2:]  # e.g. "25" for 2025
 
-        students = super().create(vals_list)
+        for vals in vals_list:
+            if not vals.get('admission_no'):
+                # get last admission with same year
+                last_student = self.search(
+                    [("admission_no", "like", f"/{current_year}")],
+                    order="id desc",
+                    limit=1
+                )
+
+                if last_student and last_student.admission_no:
+                    try:
+                        last_count = int(last_student.admission_no.split('/')[0])
+                    except:
+                        last_count = 0
+                else:
+                    last_count = 0
+
+                new_count = str(last_count + 1).zfill(2)  # always 2 digits
+                vals['admission_no'] = f"{new_count}/K01/DID/{current_year}"
+
+        students = super(Student, self).create(vals_list)
 
         for student in students:
             if student.lead_id:
                 student.lead_id.student_profile_created = True
 
         return students
+
+    discount_requested_by = fields.Many2one('res.users', string='Discount Requested By', readonly=1)
+    discount_approved_by = fields.Many2one('res.users', string='Discount Approved By', readonly=1)
+
+    def act_discount_request(self):
+        self.discount_requested_by = self.env.user.id
+        return {'type': 'ir.actions.act_window',
+                'name': _('Discount request'),
+                'res_model': 'fee.discount',
+                'target': 'new',
+                'view_mode': 'form',
+                'view_type': 'form',
+                'context': {'default_student_id': self.id, 'default_discount_type': self.discount_type}, }
+
 
     @api.onchange(
         'comm_flat_no', 'comm_street', 'comm_post_office',
@@ -113,9 +163,12 @@ class Student(models.Model):
         self.perm_state = self.comm_state
         self.perm_pincode = self.comm_pincode
 
-    @api.depends('course_fee', 'discount_fee')
+    @api.depends('course_fee', 'discount_fee', 'fee_type')
     def _compute_total_fee(self):
         for rec in self:
+            if rec.fee_type:
+                if rec.fee_type != 'discount':
+                    rec.discount_fee = 0.0
             rec.total_fee = rec.course_fee - rec.discount_fee if rec.course_fee else 0.0
 
     @api.onchange('first_name', 'last_name')
@@ -157,7 +210,9 @@ class Student(models.Model):
     def act_confirm(self):
         for i in self:
             i.state = 'confirmed'
+
     form_token = fields.Char(string="Form Token", readonly=True)
+
     def action_generate_form_link(self):
         for rec in self:
             # Generate a unique token
@@ -189,14 +244,32 @@ class Student(models.Model):
                     'view_type': 'form',
                     'context': {'default_student_id': self.id, 'default_link': full_url}, }
 
+    discount_count = fields.Integer(string="Discount",
+                                   compute='compute_discount_count',
+                                   default=0)
 
+    def compute_discount_count(self):
+        for record in self:
+            record.discount_count = self.env['fee.discount'].search_count(
+                [('student_id', '=', self.id)])
+
+    def action_get_discount_record(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Discounts',
+            'view_mode': 'tree',
+            'res_model': 'fee.discount',
+            'domain': [('student_id', '=', self.id)],
+            'context': "{'create': False}"
+        }
 
 class StudentAcademicRecord(models.Model):
     _name = 'student.academic.record'
     _description = 'Student Academic Record'
 
     student_id = fields.Many2one('student.student', string='Student')
-    exam_passed = fields.Char(string='Qualifying Exam Passed')
+    exam_passed = fields.Selection([('sslc','SSLC'), ('plus_one', 'Plus One'), ('plus_two', 'Plus Two'), ('degree', 'Degree')], string='Qualifying Exam Passed')
     institution = fields.Char(string='Institution')
     year = fields.Integer(string='Year')
     percentage = fields.Float(string='Percentage')

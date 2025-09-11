@@ -7,3 +7,4 @@ access_student_add_wizard,access_student_add_wizard,model_add_student_wizard,bas
 access_student_link_wizard,access_student_link_wizard,model_student_details_link,base.group_user,1,1,1,1
 
 access_student_welcome_mail,access_student_welcome_mail,model_student_welcome_mail,base.group_user,1,1,1,1
+access_student_discount,access_student_discount,model_fee_discount,base.group_user,1,1,1,1

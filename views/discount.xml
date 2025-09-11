@@ -1,0 +1,80 @@
+<odoo>
+    <data>
+        <record id="ir_sequence_student_student" model="ir.sequence">
+            <field name="name">Serial Numbers</field>
+            <field name="code">fee.discount</field>
+            <field name="prefix">DISC</field>
+            <field name="padding">3</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+    <record id="view_fee_discount_form" model="ir.ui.view">
+        <field name="name">fee.discount.form</field>
+        <field name="model">fee.discount</field>
+        <field name="arch" type="xml">
+            <form string="Fee Discount">
+                <header>
+                    <button name="act_request" type="object" invisible="state != 'draft'" string="Request"
+                            class="oe_highlight"/>
+                    <button name="act_approve" string="Approve" invisible="state != 'requested'" type="object"
+                            class="oe_highlight"/>
+                    <button name="act_reject" string="Reject" invisible="state != 'requested'" type="object" class="fa fa-ban text-danger"
+                    />
+                    <button name="act_return_to_draft" string="Return to Draft" invisible="state != 'requested'" type="object"
+                    />
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Approved" bg_color="text-bg-success" invisible="state != 'approved'"/>
+                    <widget name="web_ribbon" title="Rejected" bg_color="text-bg-danger" invisible="state != 'rejected'"/>
+                    <group>
+                        <group>
+                            <field name="number"/>
+                            <field name="student_id" required="1" readonly="state != 'draft'"/>
+                            <field name="course_id" readonly="state != 'draft'"/>
+                            <field name="course_fee" widget="monetary"/>
+                        </group>
+                        <group>
+                            <field name="discount_type" readonly="state != 'draft'"/>
+                            <field name="discount_amount" widget="monetary" readonly="state != 'draft'"/>
+                            <field name="currency_id" invisible="1" readonly="state != 'draft'"/>
+                            <field name="request_to" readonly="state != 'draft'"/>
+                        </group>
+                        <field name="note" placeholder="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_fee_discount_tree" model="ir.ui.view">
+        <field name="name">fee.discount.tree</field>
+        <field name="model">fee.discount</field>
+        <field name="arch" type="xml">
+            <tree string="Fee Discounts">
+                <field name="number"/>
+                <field name="student_id"/>
+                <field name="course_id"/>
+                <field name="request_to" string="requested To"/>
+                <field name="currency_id" invisible="1" optional="hide"/>
+                <field name="discount_amount" sum="discount_amount" widget="monetary"/>
+                <field name="state" widget="badge" decoration-success="state == 'approved'"
+                       decoration-warning="state == 'requested'"
+                       decoration-danger="state == 'rejected'"
+                       decoration-info="state == 'draft'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_fee_discount" model="ir.actions.act_window">
+        <field name="name">Fee Discounts</field>
+        <field name="res_model">fee.discount</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_fee_discount_root"
+              name="Discount Requests"
+              parent="student_management.menu_student_root"
+              action="action_fee_discount"/>
+</odoo>

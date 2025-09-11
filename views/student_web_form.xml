@@ -5,11 +5,9 @@
             <div class="container mt-5">
                 <div class="row justify-content-center">
                     <div class="col-md-6 col-lg-5">
-                        <div class="card shadow-lg p-4 rounded">
-                            <h2 class="text-center mb-4">Student Details</h2>
-
+                        <div class="card shadow-lg p-4 rounded" style="background-color:#f5efe9;">
+                            <h2 class="text-center mb-4">STUDENT DETAILS</h2>
                             <form action="/student_form/submit" method="post" class="needs-validation">
-
                                 <!-- Pass token -->
                                 <input type="hidden" name="token" t-att-value="student.form_token"/>
 
@@ -74,31 +72,35 @@
                                 <!--                                </div>-->
 
                                 <!-- Branch -->
+
                                 <div class="mb-3">
-                                    <label class="form-label">Branch</label>
+                                    <label class="form-label">Campus</label>
                                     <input type="text" class="form-control" required="1" name="branch"
                                            t-att-value="student.branch"/>
                                 </div>
 
                                 <!-- Second Language -->
-                                <div class="mb-3">
-                                    <label class="form-label">Second Language</label>
-                                    <input type="text" class="form-control" name="second_language"
-                                           t-att-value="student.second_language" required="1"/>
-                                </div>
+
+                                <t t-if="student.is_it_required_second_language">
+                                    <div class="mb-3">
+                                        <label class="form-label">Second Language</label>
+                                        <input type="text" class="form-control" name="second_language"
+                                               t-att-value="student.second_language"/>
+                                    </div>
+                                </t>
+                                <t t-if="student.is_it_required_university">
+                                    <div class="mb-3">
+                                        <label class="form-label">University</label>
+                                        <input type="text" class="form-control" name="university"
+                                               t-att-value="student.university"/>
+                                    </div>
+                                </t>
 
                                 <!-- Batch No -->
                                 <div class="mb-3">
                                     <label class="form-label">Batch No</label>
                                     <input type="text" class="form-control" name="batch_no"
                                            t-att-value="student.batch_no" required="1"/>
-                                </div>
-
-                                <!-- University -->
-                                <div class="mb-3">
-                                    <label class="form-label">University</label>
-                                    <input type="text" class="form-control" name="university"
-                                           t-att-value="student.university" required="1"/>
                                 </div>
 
                                 <h4 class="mt-4">Communication Address</h4>
@@ -179,11 +181,11 @@
                                     <input type="text" name="mother_contact" t-att-value="student.mother_contact"
                                            class="form-control" required="1"/>
                                 </div>
-<!--                                <div class="mb-3">-->
-<!--                                    <label class="form-label">Upload Photo</label>-->
-<!--                                    <input type="file" class="form-control" name="photo" accept="image/*"/>-->
-<!--                                    <small class="text-muted">Allowed formats: JPG, PNG, GIF (Max size: 2MB)</small>-->
-<!--                                </div>-->
+                                <!--                                <div class="mb-3">-->
+                                <!--                                    <label class="form-label">Upload Photo</label>-->
+                                <!--                                    <input type="file" class="form-control" name="photo" accept="image/*"/>-->
+                                <!--                                    <small class="text-muted">Allowed formats: JPG, PNG, GIF (Max size: 2MB)</small>-->
+                                <!--                                </div>-->
 
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-primary btn-lg">Submit</button>

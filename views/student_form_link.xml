@@ -7,7 +7,7 @@
        <field name="arch" type="xml">
            <form string="Student Details Link">
                <group>
-                   <field name="student_id"/>
+                   <field name="student_id" invisible="1"/>
                    <field name="link" widget="url" readonly="1"/>
                </group>
 

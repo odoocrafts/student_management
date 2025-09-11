@@ -15,6 +15,12 @@
         'security/ir.model.access.csv',
         'views/student_views.xml',
         'views/crm_lead_views.xml',
+        'views/student_web_form.xml',
+        'views/student_form_link.xml',
+        'views/welcome_mail.xml',
+        'views/product.xml',
+        'views/discount.xml',
+        'data/activity.xml'
     ],
     'installable': True,
     'application': True,

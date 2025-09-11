@@ -5,14 +5,27 @@
         <field name="model">student.student</field>
         <field name="arch" type="xml">
             <form>
+                <style>
+                    .student-btn-form {
+                    background-color: #c1fa7f;
+                    color: black !important;
+                    }
+                </style>
                 <header>
                     <button name="act_confirm" type="object" string="Confirm" class="oe_highlight"
                             invisible="state != 'draft'"/>
-                    <button name="act_send_welcome_email" type="object" string="Send Mail"/>
-                    <button name="action_generate_form_link" string="Student Details Form" type="object"/>
+                    <button name="act_send_welcome_email" type="object" string="Send Mail" class="oe_highlight"/>
+                    <button name="action_generate_form_link" string="Student Details Form" type="object"
+                            class="student-btn-form"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_get_discount_record" type="object" icon="fa-credit-card"
+                                class="oe_stat_button">
+                            <field name="discount_count" widget="statinfo" string="Discount"/>
+                        </button>
+                    </div>
                     <div style="width:100%;" class="row align-items-center">
                         <div class="col-4 col-lg-2" style="text-align-last: center;">
                             <field name="photo" widget="image" class="oe_left oe_avatar"
@@ -47,6 +60,7 @@
                             <group>
                                 <group>
                                     <field name="form_token" invisible="1"/>
+                                    <field name="course_id" string="Course"/>
                                     <field name="admission_no" string="Admission No." placeholder="Admission Number"/>
                                     <field name="mobile" placeholder="Mobile Number"/>
                                     <field name="whatsapp"/>
@@ -61,11 +75,12 @@
                         <page string="Personal Information" name="personal_information">
                             <group>
                                 <group>
-
-                                    <field name="branch"/>
-                                    <field name="second_language"/>
+                                    <field name="branch" string="Campus"/>
+                                    <field name="is_it_required_university" invisible="1"/>
+                                    <field name="is_it_required_second_language" invisible="1"/>
+                                    <field name="university" invisible="is_it_required_university == 0"/>
+                                    <field name="second_language" invisible="is_it_required_second_language == 0"/>
                                     <field name="batch_no"/>
-                                    <field name="university"/>
                                     <!--                                    <field name="payment_scheme"/>-->
                                     <field name="installment_count" invisible="payment_scheme != 'installment'"/>
                                 </group>
@@ -131,11 +146,23 @@
                         <page string="Fee Management">
                             <group>
                                 <group>
+                                    <label for="fee_type"/>
+                                    <div class="o_row">
+                                        <field name="fee_type"/>
+                                        <button name="act_discount_request"
+                                                type="object"
+                                                string="Discount Request"
+                                                invisible="fee_type != 'discount'" class="oe_highlight"/>
+                                    </div>
                                     <field name="payment_scheme"/>
+                                    <field name="discount_type" invisible="fee_type != 'discount'"/>
+                                    <field name="discount_requested_by" invisible="fee_type != 'discount'"/>
+                                    <field name="discount_approved_by" invisible="fee_type != 'discount'"/>
+
                                 </group>
                                 <group>
                                     <field name="course_fee" string="Course Fee"/>
-                                    <field name="discount_fee"/>
+                                    <field name="discount_fee" invisible="fee_type != 'discount'" readonly="1"/>
                                     <field name="total_fee"/>
                                     <field name="paid_amount"/>
                                     <field name="pending_amount"/>
@@ -189,7 +216,8 @@
                 <field name="pending_amount" sum="Pending"/>
                 <field name="payment_scheme"/>
                 <field name="next_payment_date"/>
-                <field name="state" widget="badge" decoration-success="state == 'confirmed'" decoration-info="state == 'draft'"/>
+                <field name="state" widget="badge" decoration-success="state == 'confirmed'"
+                       decoration-info="state == 'draft'"/>
             </tree>
         </field>
     </record>
@@ -198,6 +226,12 @@
         <field name="name">Students</field>
         <field name="res_model">student.student</field>
         <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_courses" model="ir.actions.act_window">
+        <field name="name">Courses</field>
+        <field name="res_model">product.product</field>
+        <field name="view_mode">kanban,tree,form</field>
     </record>
 
     <menuitem id="menu_student_root"
@@ -209,5 +243,11 @@
               name="Students"
               parent="menu_student_root"
               action="action_student"
-              sequence="10"/>
+              sequence="1"/>
+
+    <menuitem id="menu_courses"
+              name="Courses"
+              parent="menu_student_root"
+              action="action_courses"
+              sequence="2"/>
 </odoo>
