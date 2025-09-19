@@ -192,7 +192,7 @@
 
                                 </page>
 
-                                <page name="semester_fee_details" string="Semester Fee Details">
+                                <page name="semester_fee_details" string="Semester Fee Details" invisible="course_type != 'degree'">
                                     <field name="semester_records_ids" string="Semester Details">
                                         <tree editable="bottom">
                                             <field name="name"/>
