@@ -10,14 +10,21 @@ class Student(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'name'
 
-    photo = fields.Image(string='Student Photo', max_width=1024, max_height=1024)
+    photo = fields.Binary(string='Student Photo', max_width=1024, max_height=1024)
     name = fields.Char(string='Student Name', required=True)
     first_name = fields.Char('First Name', )
     last_name = fields.Char('Last Name', )
     mobile = fields.Char(string='Phone No.', widget='phone', required=True)
     email = fields.Char(string='Email Id', required=True)
     enrollment_date = fields.Date(string='Date of Enrollment', default=fields.Date.today())
-    academic_year = fields.Char(string='Academic Year')
+    academic_year = fields.Selection(
+        selection=[
+            ('2025', '2025'),
+            ('2026', '2026'),
+            ('2027', '2027'),
+        ],
+        string='Academic Year'
+    )
     fee_type = fields.Selection([
         ('course_fee', 'Course Fee'),
         ('contracted_fee', 'Contracted Fee'),
@@ -35,9 +42,12 @@ class Student(models.Model):
         ('regular', 'Regular'),
         ('distance', 'Distance')
     ], string='Mode of Study')
+    sslc_certificate = fields.Binary(string='SSLC Certificate')
     course_id = fields.Many2one('product.product', string='Course Applied For',
                                 domain=[('type', '=', 'service')], required=True)
-    branch = fields.Char(string='Branch')
+    course_code = fields.Char(string='Course Code', related='course_id.course_code')
+    branch = fields.Many2one('student.branch', string='Branch', domain=[('active', '=', 1)], required=True)
+    branch_code = fields.Char(string='Branch Code', related='branch.code')
     second_language = fields.Char(string='Second Language')
     batch_no = fields.Char(string='Batch No')
     university = fields.Char(string='University')
@@ -71,11 +81,13 @@ class Student(models.Model):
 
     # Parent Details
     father_name = fields.Char(string="Father's Name")
+    father_mail = fields.Char(string="Father's Mail")
     father_age = fields.Integer(string="Father's Age")
     father_occupation = fields.Char(string="Father's Occupation")
     father_occupation_location = fields.Char(string="Father Occupation Location")
     father_contact = fields.Char(string="Father's Contact No.")
     mother_name = fields.Char(string="Mother's Name")
+    mother_mail = fields.Char(string="Mother's Mail")
     mother_age = fields.Integer(string="Mother's Age")
     mother_occupation = fields.Char(string="Mother's Occupation")
     mother_occupation_location = fields.Char(string="Mother Occupation Location")
@@ -103,14 +115,59 @@ class Student(models.Model):
     installment_count = fields.Integer(string='Number of Installments', default=1)
     next_payment_date = fields.Date(string='Next Payment Date')
     lead_id = fields.Many2one('crm.lead', string='Lead')
+    course_type = fields.Selection(
+        [
+            ("degree", "Degree"),
+            ("diploma", "Diploma"),
+            ("certificate", "Certificate"),
+
+        ],
+        string="Course Type", related='course_id.course_type',
+    )
+    semester_records_ids = fields.One2many('semester.fee.details', 'student_id', string='Semester Details',
+                                           compute='_compute_generate_semester_fees', store=1)
+    semester_count = fields.Integer(string='Semester Count', related='course_id.semester_count', )
+
+    @api.depends('course_id', 'total_fee', 'semester_count')
+    def _compute_generate_semester_fees(self):
+
+        for student in self:
+            student.semester_records_ids = [(5, 0, 0)]
+            if student.semester_count and student.total_fee:
+                fee_per_semester = student.total_fee / student.semester_count
+                semester_lines = []
+
+                for i in range(1, student.semester_count + 1):
+                    semester_lines.append((0, 0, {
+                        'name': f"Semester {i}",
+                        'semester': str(i),  # match selection or char field
+                        'fee_amount': fee_per_semester,
+                        'balance_amount': fee_per_semester,
+                    }))
+
+                student.semester_records_ids = semester_lines
+            else:
+                student.semester_records_ids = [(5, 0, 0)]
 
     @api.model_create_multi
     def create(self, vals_list):
         current_year = str(date.today().year)[-2:]  # e.g. "25" for 2025
 
         for vals in vals_list:
-            if not vals.get('admission_no'):
-                # get last admission with same year
+            if not vals.get("admission_no"):
+                # Check branch & course codes (must be available)
+                branch_code = ""
+                course_code = ""
+
+                if vals.get("branch"):
+                    branch = self.env["student.branch"].browse(vals["branch"])
+                    branch_code = branch.code or ""
+
+                if vals.get("course_id"):
+                    course = self.env["product.product"].browse(vals["course_id"])
+                    course_code = course.course_code or ""
+
+                # Get last admission number for same year
                 last_student = self.search(
                     [("admission_no", "like", f"/{current_year}")],
                     order="id desc",
@@ -119,16 +176,30 @@ class Student(models.Model):
 
                 if last_student and last_student.admission_no:
                     try:
-                        last_count = int(last_student.admission_no.split('/')[0])
-                    except:
+                        last_count = int(last_student.admission_no.split("/")[0])
+                    except Exception:
                         last_count = 0
                 else:
                     last_count = 0
 
                 new_count = str(last_count + 1).zfill(2)  # always 2 digits
-                vals['admission_no'] = f"{new_count}/K01/DID/{current_year}"
+                vals["admission_no"] = f"{new_count}/{branch_code}/{course_code}/{current_year}"
 
         students = super(Student, self).create(vals_list)
+        for student in students:
+            if student.semester_count and student.total_fee:
+                fee_per_semester = student.total_fee / student.semester_count
+                semester_lines = []
+
+                for i in range(1, student.semester_count + 1):
+                    semester_lines.append((0, 0, {
+                        'name': f"Semester {i}",
+                        'semester': str(i),  # must match selection field type
+                        'fee_amount': fee_per_semester,
+                        'balance_amount': fee_per_semester,
+                    }))
+
+                student.write({'semester_records_ids': semester_lines})
 
         for student in students:
             if student.lead_id:
@@ -148,7 +219,6 @@ class Student(models.Model):
                 'view_mode': 'form',
                 'view_type': 'form',
                 'context': {'default_student_id': self.id, 'default_discount_type': self.discount_type}, }
-
 
     @api.onchange(
         'comm_flat_no', 'comm_street', 'comm_post_office',
@@ -245,8 +315,8 @@ class Student(models.Model):
                     'context': {'default_student_id': self.id, 'default_link': full_url}, }
 
     discount_count = fields.Integer(string="Discount",
-                                   compute='compute_discount_count',
-                                   default=0)
+                                    compute='compute_discount_count',
+                                    default=0)
 
     def compute_discount_count(self):
         for record in self:
@@ -264,14 +334,18 @@ class Student(models.Model):
             'context': "{'create': False}"
         }
 
+
 class StudentAcademicRecord(models.Model):
     _name = 'student.academic.record'
     _description = 'Student Academic Record'
 
     student_id = fields.Many2one('student.student', string='Student')
-    exam_passed = fields.Selection([('sslc','SSLC'), ('plus_one', 'Plus One'), ('plus_two', 'Plus Two'), ('degree', 'Degree')], string='Qualifying Exam Passed')
+    exam_passed = fields.Selection(
+        [('sslc', 'SSLC'), ('plus_one', 'Plus One'), ('plus_two', 'Plus Two'), ('degree', 'Degree')],
+        string='Qualifying Exam Passed')
     institution = fields.Char(string='Institution')
     year = fields.Integer(string='Year')
+    location = fields.Char(string='Location')
     percentage = fields.Float(string='Percentage')
 
 

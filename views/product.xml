@@ -6,8 +6,21 @@
         <field name="inherit_id" ref="product.product_normal_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='detailed_type']" position="after">
+                <field name="course_code" required="1"/>
+                <field name="course_type"/>
+                <field name="branch_id"/>
                 <field name="is_it_required_university"/>
                 <field name="is_it_required_second_language"/>
+            </xpath>
+            <xpath expr="//page[@name='general_information']" position="after">
+                <page string="Semester Information" name="semester_information" invisible="course_type != 'degree'">
+                    <group>
+                        <group>
+                            <field name="semester_count"/>
+                        </group>
+                        <!--                        <field name="academic_year"/>-->
+                    </group>
+                </page>
             </xpath>
         </field>
     </record>

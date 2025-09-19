@@ -1,6 +1,3 @@
-from odoo import http
-from odoo.http import request, Controller, route
-
 
 from odoo import http
 from odoo.http import request
@@ -20,14 +17,18 @@ class StudentFormController(http.Controller):
         print("POST DATA:", post)  # Debugging
         student = request.env['student.student'].sudo().search([('form_token', '=', post.get('token'))], limit=1)
         if student:
+            photo = post.get('photo')
+
             vals = {
+
+                # 'photo': base64.b64encode(photo.read()),
                 'mobile': post.get('mobile'),
                 'email': post.get('email'),
                 'enrollment_date': post.get('enrollment_date') or False,
                 'academic_year': post.get('academic_year'),
                 'mode_of_study': post.get('mode_of_study'),
                 # 'course_id': int(post.get('course_id')) if post.get('course_id') else False,
-                'branch': post.get('branch'),
+                # 'branch': post.get('branch'),
                 'second_language': post.get('second_language'),
                 'batch_no': post.get('batch_no'),
                 'university': post.get('university'),
@@ -39,22 +40,24 @@ class StudentFormController(http.Controller):
                 'comm_pincode': post.get('comm_pincode'),
                 # Father's Details
                 'father_name': post.get('father_name'),
+                'father_mail': post.get('father_mail'),
                 'father_occupation': post.get('father_occupation'),
                 'father_occupation_location': post.get('father_occupation_location'),
                 'father_contact': post.get('father_contact'),
                 # Mother's Details
                 'mother_name': post.get('mother_name'),
+                'mother_mail': post.get('mother_mail'),
                 'mother_occupation': post.get('mother_occupation'),
                 'mother_occupation_location': post.get('mother_occupation_location'),
                 'mother_contact': post.get('mother_contact'),
                 'state': 'confirmed'
             }
-
-            # if 'photo' in request.httprequest.files:
-            #     photo_file = request.httprequest.files['photo']
-            #     if photo_file.filename:  # Ensure a file is actually uploaded
-            #         vals['photo'] = base64.b64encode(photo_file.read())
-            # print(vals, 'vals')
+            file = request.httprequest.files.get('photo')
+            if file and file.filename:
+                vals['photo'] = base64.b64encode(file.read())
+            sslc_file = request.httprequest.files.get('sslc_certificate')
+            if sslc_file and sslc_file.filename:
+                vals['sslc_certificate'] = base64.b64encode(sslc_file.read())
             student.sudo().write(vals)
 
             student.form_token = False  # Optional: prevent reuse

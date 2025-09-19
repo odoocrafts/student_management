@@ -20,7 +20,8 @@
         'views/welcome_mail.xml',
         'views/product.xml',
         'views/discount.xml',
-        'data/activity.xml'
+        'data/activity.xml',
+        'views/branch.xml',
     ],
     'installable': True,
     'application': True,

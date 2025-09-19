@@ -8,3 +8,5 @@ access_student_link_wizard,access_student_link_wizard,model_student_details_link
 
 access_student_welcome_mail,access_student_welcome_mail,model_student_welcome_mail,base.group_user,1,1,1,1
 access_student_discount,access_student_discount,model_fee_discount,base.group_user,1,1,1,1
+access_student_branch,access_student_branch,model_student_branch,base.group_user,1,1,1,1
+access_semester_details,access_semester_details,model_semester_fee_details,base.group_user,1,1,1,1
