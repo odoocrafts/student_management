@@ -19,11 +19,12 @@
                 <button string="Student Onboard"
                         name="action_create_student"
                         type="object"
-                        invisible="probability &lt; 100 or student_profile_created == 1"
+                        invisible="is_won_stage == False or student_profile_created == 1"
                         class="btn-primary"/>
             </xpath>
             <xpath expr="//field[@name='tag_ids']" position="after">
                 <field name="student_profile_created" invisible="1"/>
+                <field name="is_won_stage" invisible="1"/>
             </xpath>
         </field>
     </record>

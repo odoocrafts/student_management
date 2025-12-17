@@ -28,16 +28,12 @@ class CrmLead(models.Model):
                                    compute='compute_student_count',
                                    default=0)
     student_profile_created = fields.Boolean(string="Student Profile Created")
-    is_won_stage = fields.Boolean(string="Is Won Stage", default=False)
+    is_won_stage = fields.Boolean(string="Is Won Stage", compute='_compute_is_won_stage', store=True)
 
-    @api.onchange('stage_id')
-    def _onchange_stage_id(self):
-        if self.stage_id:
-            print('stage')
-            if self.stage_id.is_won:
-                self.is_won_stage = True
-            else:
-                self.is_won_stage = False
+    @api.depends('stage_id', 'stage_id.is_won')
+    def _compute_is_won_stage(self):
+        for record in self:
+            record.is_won_stage = record.stage_id.is_won if record.stage_id else False
 
     def compute_student_count(self):
         for record in self:
