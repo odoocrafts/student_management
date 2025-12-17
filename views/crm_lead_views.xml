@@ -80,4 +80,32 @@
         </field>
     </record>
 
+    <!-- Inheritance for Institute CRM Form -->
+    <!-- This ensures student_management buttons work with institute_crm module -->
+    <record id="crm_lead_view_form_inherit_institute_crm" model="ir.ui.view">
+        <field name="name">crm.lead.form.inherit.institute.crm</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="institute_crm.view_institute_crm_lead_form"/>
+        <field name="arch" type="xml">
+            <!-- Inject stat button into button_box -->
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button"
+                        type="object"
+                        icon="fa-id-badge"
+                        name="action_get_student_record">
+                    <field string="Student" name="student_count" widget="statinfo"/>
+                </button>
+            </div>
+            
+            <!-- Inject Student Onboard button into header -->
+            <xpath expr="//header/field[@name='stage_id']" position="after">
+                <button string="Student Onboard"
+                        name="action_create_student"
+                        type="object"
+                        invisible="is_won_stage == False or student_profile_created == 1"
+                        class="btn-primary"/>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>
