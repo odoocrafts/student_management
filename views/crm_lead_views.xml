@@ -87,6 +87,13 @@
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="institute_crm.view_institute_crm_lead_form"/>
         <field name="arch" type="xml">
+            <!-- Inject hidden fields first (must be loaded before buttons) -->
+            <div name="button_box" position="before">
+                <field name="student_profile_created" invisible="1"/>
+                <field name="is_won_stage" invisible="1"/>
+                <field name="student_count" invisible="1"/>
+            </div>
+            
             <!-- Inject stat button into button_box -->
             <div name="button_box" position="inside">
                 <button class="oe_stat_button"
