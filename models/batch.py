@@ -77,12 +77,17 @@ class StudentBatch(models.Model):
             mode_label = dict(self._fields['mode'].selection).get(batch.mode, '')
             date_str = batch.commencement_date.strftime('%d-%b-%y') if batch.commencement_date else ''
             
-            # Format: "Batch Name | Mode | Date"
-            display_name = f"{batch.name}"
+            # Format: "[Mode | Date] Batch Name" - similar to course code display
+            prefix_parts = []
             if mode_label:
-                display_name += f" | {mode_label}"
+                prefix_parts.append(mode_label)
             if date_str:
-                display_name += f" | {date_str}"
+                prefix_parts.append(date_str)
+            
+            if prefix_parts:
+                display_name = f"[{' | '.join(prefix_parts)}] {batch.name}"
+            else:
+                display_name = batch.name
             
             result.append((batch.id, display_name))
         return result
