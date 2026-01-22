@@ -81,7 +81,7 @@
                                     <field name="is_it_required_second_language" invisible="1"/>
                                     <field name="university" invisible="is_it_required_university == 0"/>
                                     <field name="second_language" invisible="is_it_required_second_language == 0"/>
-                                    <field name="batch_no"/>
+                                    <field name="batch_id"/>
                                     <!--                                    <field name="payment_scheme"/>-->
                                     <field name="installment_count" invisible="payment_scheme != 'installment'"/>
                                 </group>
@@ -248,7 +248,7 @@
                 <field name="name"/>
                 <field name="mobile" placeholder="Mobile Number"/>
                 <field name="course_id"/>
-                <field name="batch_no"/>
+                <field name="batch_id"/>
                 <field name="total_fee" sum="Total"/>
                 <field name="paid_amount" sum="Paid"/>
                 <field name="pending_amount" sum="Pending"/>

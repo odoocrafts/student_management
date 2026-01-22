@@ -54,6 +54,7 @@ class StudentCreationWizard(models.TransientModel):
    email = fields.Char(required=True)
    branch_id = fields.Many2one('student.branch', string='Branch', required=True)
    course_id = fields.Many2one('product.product', required=1)
+   batch_id = fields.Many2one('student.batch', string='Batch')
    payment_plan = fields.Selection([
         ('full', 'Full Payment'),
         ('installment', 'Installment')
@@ -64,6 +65,7 @@ class StudentCreationWizard(models.TransientModel):
        if self.lead_id:
            self.mobile = self.lead_id.mobile
            self.email = self.lead_id.email_from
+           self.batch_id = self.lead_id.batch_id
 
 
    @api.onchange('first_name', 'last_name')
@@ -82,5 +84,6 @@ class StudentCreationWizard(models.TransientModel):
                'course_id': i.course_id.id,
                'lead_id': i.lead_id.id,
                'branch': i.branch_id.id,
+               'batch_id': i.batch_id.id if i.batch_id else False,
            })
            i.lead_id.student_profile_created = True

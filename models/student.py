@@ -49,7 +49,7 @@ class Student(models.Model):
     branch = fields.Many2one('student.branch', string='Branch', domain=[('active', '=', 1)], required=True)
     branch_code = fields.Char(string='Branch Code', related='branch.code')
     second_language = fields.Char(string='Second Language')
-    batch_no = fields.Char(string='Batch No')
+    batch_id = fields.Many2one('student.batch', string='Batch')
     university = fields.Char(string='University')
     is_it_required_university = fields.Boolean(string='University Required',
                                                related='course_id.is_it_required_university')
