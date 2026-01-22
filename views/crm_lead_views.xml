@@ -114,6 +114,11 @@
                         invisible="is_won_stage == False or student_profile_created == 1"
                         class="btn-primary"/>
             </xpath>
+            
+            <!-- Add visible Batch field to Academic Background section -->
+            <xpath expr="//field[@name='joining_frequency']" position="after">
+                <field name="batch_id" options="{'no_create': True}"/>
+            </xpath>
         </field>
     </record>
 
