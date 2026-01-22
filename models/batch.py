@@ -70,6 +70,23 @@ class StudentBatch(models.Model):
             if not self.name or self.name == '':
                 self.name = suggested_name
 
+    def name_get(self):
+        """Customize batch display to include mode and date for better clarity in dropdowns."""
+        result = []
+        for batch in self:
+            mode_label = dict(self._fields['mode'].selection).get(batch.mode, '')
+            date_str = batch.commencement_date.strftime('%d-%b-%y') if batch.commencement_date else ''
+            
+            # Format: "Batch Name | Mode | Date"
+            display_name = f"{batch.name}"
+            if mode_label:
+                display_name += f" | {mode_label}"
+            if date_str:
+                display_name += f" | {date_str}"
+            
+            result.append((batch.id, display_name))
+        return result
+
     _sql_constraints = [
         ('unique_batch', 
          'UNIQUE(course_id, mode, commencement_date)',
