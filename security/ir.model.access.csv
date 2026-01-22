@@ -10,4 +10,5 @@ access_student_welcome_mail,access_student_welcome_mail,model_student_welcome_ma
 access_student_discount,access_student_discount,model_fee_discount,base.group_user,1,1,1,1
 access_student_branch,access_student_branch,model_student_branch,base.group_user,1,1,1,1
 access_semester_details,access_semester_details,model_semester_fee_details,base.group_user,1,1,1,1
-access_student_batch,access_student_batch,model_student_batch,base.group_user,1,1,1,1
+access_student_batch_user,access_student_batch_user,model_student_batch,sales_team.group_sale_salesman,1,0,0,0
+access_student_batch_manager,access_student_batch_manager,model_student_batch,sales_team.group_sale_manager,1,1,1,1
