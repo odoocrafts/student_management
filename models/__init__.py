@@ -6,3 +6,4 @@ from . import product
 from . import discount
 from . import branch
 from . import semester_details
+from . import batch

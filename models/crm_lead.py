@@ -29,6 +29,7 @@ class CrmLead(models.Model):
                                    default=0)
     student_profile_created = fields.Boolean(string="Student Profile Created")
     is_won_stage = fields.Boolean(string="Is Won Stage", compute='_compute_is_won_stage', store=True)
+    batch_id = fields.Many2one('student.batch', string='Batch', help='Select the batch for this lead')
 
     @api.depends('stage_id', 'stage_id.is_won')
     def _compute_is_won_stage(self):

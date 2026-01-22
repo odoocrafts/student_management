@@ -22,6 +22,7 @@
         'views/discount.xml',
         'data/activity.xml',
         'views/branch.xml',
+        'views/batch_views.xml',
     ],
     'installable': True,
     'application': True,

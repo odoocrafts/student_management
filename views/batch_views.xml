@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Batch Tree View -->
+    <record id="view_student_batch_tree" model="ir.ui.view">
+        <field name="name">student.batch.tree</field>
+        <field name="model">student.batch</field>
+        <field name="arch" type="xml">
+            <tree string="Batches">
+                <field name="name"/>
+                <field name="course_id"/>
+                <field name="mode"/>
+                <field name="commencement_date"/>
+                <field name="student_count"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Batch Form View -->
+    <record id="view_student_batch_form" model="ir.ui.view">
+        <field name="name">student.batch.form</field>
+        <field name="model">student.batch</field>
+        <field name="arch" type="xml">
+            <form string="Batch">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" 
+                                type="object" 
+                                name="action_view_students" 
+                                icon="fa-users"
+                                invisible="student_count == 0">
+                            <field string="Students" name="student_count" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="course_id"/>
+                        </group>
+                        <group>
+                            <field name="mode"/>
+                            <field name="commencement_date"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Batch Search View -->
+    <record id="view_student_batch_search" model="ir.ui.view">
+        <field name="name">student.batch.search</field>
+        <field name="model">student.batch</field>
+        <field name="arch" type="xml">
+            <search string="Search Batches">
+                <field name="name"/>
+                <field name="course_id"/>
+                <field name="commencement_date"/>
+                <filter string="Online" name="online" domain="[('mode', '=', 'online')]"/>
+                <filter string="Offline" name="offline" domain="[('mode', '=', 'offline')]"/>
+                <separator/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Course" name="group_course" context="{'group_by': 'course_id'}"/>
+                    <filter string="Mode" name="group_mode" context="{'group_by': 'mode'}"/>
+                    <filter string="Commencement Date" name="group_date" context="{'group_by': 'commencement_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Batch Action -->
+    <record id="action_student_batch" model="ir.actions.act_window">
+        <field name="name">Batches</field>
+        <field name="res_model">student.batch</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first batch
+            </p>
+            <p>
+                Manage student batches by course, mode, and commencement date.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_student_batch"
+              name="Batches"
+              parent="student_management.menu_student_root"
+              action="action_student_batch"
+              sequence="20"/>
+
+</odoo>

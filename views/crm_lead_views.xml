@@ -23,6 +23,7 @@
                         class="btn-primary"/>
             </xpath>
             <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="batch_id"/>
                 <field name="student_profile_created" invisible="1"/>
                 <field name="is_won_stage" invisible="1"/>
             </xpath>
@@ -92,6 +93,7 @@
                 <field name="student_profile_created" invisible="1"/>
                 <field name="is_won_stage" invisible="1"/>
                 <field name="student_count" invisible="1"/>
+                <field name="batch_id" invisible="1"/>
             </div>
             
             <!-- Inject stat button into button_box -->
