@@ -249,6 +249,7 @@
                 <field name="mobile" placeholder="Mobile Number"/>
                 <field name="course_id"/>
                 <field name="batch_id"/>
+                <field name="user_id" string="Admission Officer" optional="show"/>
                 <field name="total_fee" sum="Total"/>
                 <field name="paid_amount" sum="Paid"/>
                 <field name="pending_amount" sum="Pending"/>

@@ -13,6 +13,7 @@
     'depends': ['crm', 'product'],
     'data': [
         'security/ir.model.access.csv',
+        'security/student_security.xml',
         'views/student_views.xml',
         'views/crm_lead_views.xml',
         'views/student_web_form.xml',

@@ -85,5 +85,6 @@ class StudentCreationWizard(models.TransientModel):
                'lead_id': i.lead_id.id,
                'branch': i.branch_id.id,
                'batch_id': i.batch_id.id if i.batch_id else False,
+               'user_id': i.lead_id.user_id.id if i.lead_id and i.lead_id.user_id else self.env.user.id,
            })
            i.lead_id.student_profile_created = True
