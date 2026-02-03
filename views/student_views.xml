@@ -65,6 +65,7 @@
                                     <field name="mobile" placeholder="Mobile Number"/>
                                     <field name="whatsapp"/>
                                     <field name="email" required="1" placeholder="Email Address"/>
+                                    <field name="user_id" string="Admission Officer" widget="many2one_avatar_user"/>
 
                                 </group>
                             </group>
