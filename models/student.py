@@ -111,12 +111,12 @@ class Student(models.Model):
         ('installment', 'Installment')
     ], string='Payment Scheme', required=True, default='full')
     state = fields.Selection([('draft', 'Draft'), ('confirmed', 'Confirmed')], string='Status', default='draft',
-                             track_visibility=True)
+                             tracking=True)
     installment_count = fields.Integer(string='Number of Installments', default=1)
     next_payment_date = fields.Date(string='Next Payment Date')
     lead_id = fields.Many2one('crm.lead', string='Lead')
     user_id = fields.Many2one('res.users', string='Admitted By', default=lambda self: self.env.user,
-                              track_visibility=True)
+                              tracking=True)
 
     course_type = fields.Selection(
         [
