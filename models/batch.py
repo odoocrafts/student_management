@@ -42,6 +42,11 @@ class StudentBatch(models.Model):
         default=True,
         help='Set to false to archive the batch'
     )
+    target_admission = fields.Integer(
+        string='Admission Target',
+        default=0,
+        help='Target number of admissions for this batch'
+    )
     student_count = fields.Integer(
         string='Students',
         compute='_compute_student_count',

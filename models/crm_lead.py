@@ -74,7 +74,7 @@ class StudentCreationWizard(models.TransientModel):
 
    def action_create_student(self):
        for i in self:
-           self.env['student.student'].sudo().create({
+           student = self.env['student.student'].sudo().create({
                'first_name': i.first_name,
                'last_name': i.last_name,
                'name': i.name,
@@ -88,3 +88,6 @@ class StudentCreationWizard(models.TransientModel):
                'user_id': i.lead_id.user_id.id if i.lead_id and i.lead_id.user_id else self.env.user.id,
            })
            i.lead_id.student_profile_created = True
+           
+           if hasattr(i.lead_id, 'admitted_campus') and student.branch:
+               i.lead_id.admitted_campus = student.branch.name
