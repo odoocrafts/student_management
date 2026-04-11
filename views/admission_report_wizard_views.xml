@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_institute_admission_report_wizard_form_inherit" model="ir.ui.view">
+        <field name="name">institute.admission.report.wizard.form.inherit</field>
+        <field name="model">institute.admission.report.wizard</field>
+        <field name="inherit_id" ref="institute_crm.view_institute_admission_report_wizard_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='report_type']" position="after">
+                <field name="branch_id" invisible="report_type != 'college'"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

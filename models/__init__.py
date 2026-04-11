@@ -7,3 +7,4 @@ from . import discount
 from . import branch
 from . import semester_details
 from . import batch
+from . import admission_report_wizard

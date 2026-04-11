@@ -93,4 +93,11 @@
               action="action_student_batch"
               sequence="20"/>
 
+    <!-- Add Batches menu under CRM Configuration -->
+    <menuitem id="menu_crm_batches"
+              name="Batches"
+              parent="crm.crm_menu_config"
+              action="action_student_batch"
+              sequence="30"/>
+
 </odoo>

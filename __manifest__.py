@@ -24,6 +24,7 @@
         'data/activity.xml',
         'views/branch.xml',
         'views/batch_views.xml',
+        'views/admission_report_wizard_views.xml',
     ],
     'installable': True,
     'application': True,
